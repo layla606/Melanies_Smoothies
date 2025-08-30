@@ -27,10 +27,6 @@ ingredients_list = st.multiselect(
     max_selections=5
 )
 
-import requests
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-st.text(smoothiefroot_response)
-
 
 # --- Handle selected ingredients ---
 if ingredients_list:
@@ -50,3 +46,8 @@ if ingredients_list:
     if st.button("Submit order"):
         session.sql(my_insert_stmt).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
+
+import requests
+smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+st.text(smoothiefroot_response.json())
+
