@@ -33,13 +33,13 @@ if ingredients_list:
     # Join fruits into one string
     ingredients_string = " ".join(ingredients_list)
 
-    # Create SQL insert statement with safe parameters
+    # Create SQL insert statement using safe bind parameters
     my_insert_stmt = """
         INSERT INTO smoothies.public.orders(ingredients, name_on_order)
         VALUES (:ingredients, :title)
     """
 
-    # Display SQL preview for clarity
+    # Display SQL preview (optional)
     st.write("SQL preview:")
     st.code(f"INSERT INTO smoothies.public.orders(ingredients, name_on_order) VALUES ('{ingredients_string}', '{title}')")
 
@@ -48,7 +48,7 @@ if ingredients_list:
         session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
 
-# --- Fetch data from external API ---
+# --- Fetch data from SmoothieFroot API ---
 smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
 sf_df = st.dataframe(smoothiefroot_response.json(), use_container_width=True)
 # Optional: display pretty JSON
