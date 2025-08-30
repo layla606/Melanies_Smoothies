@@ -48,9 +48,14 @@ if ingredients_list:
         session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
 
-# --- Fetch data from SmoothieFroot API ---
 smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-sf_df = st.dataframe(smoothiefroot_response.json(), use_container_width=True)
-st.write("Type du JSON:", type(response.json()))
-st.write("Contenu brut du JSON:")
-st.json(response.json())
+data = smoothiefroot_response.json()
+
+# Si la réponse est un dictionnaire, le mettre dans une liste pour créer une ligne de DataFrame
+if isinstance(data, dict):
+    sf_df = pd.DataFrame([data])
+else:
+    sf_df = pd.DataFrame(data)
+
+# Affichage dans Streamlit
+st.dataframe(sf_df, use_container_width=True)
