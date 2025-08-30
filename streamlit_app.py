@@ -2,6 +2,7 @@
 import streamlit as st
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
+import requests
 
 
 # --- App title ---
@@ -30,8 +31,12 @@ ingredients_list = st.multiselect(
 
 # --- Handle selected ingredients ---
 if ingredients_list:
-    # Join fruits into one string
-    ingredients_string = " ".join(ingredients_list)
+    ingredients_string = " "
+    for fruit_chosen in ingredients_list:
+        ingredients-string+=fruit_chosen+' '       
+        smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+        sf_df = st.dataframe(smoothiefroot_response.json(), use_container_width=True)
+
 
     # Create SQL insert statement using safe bind parameters
     my_insert_stmt = """
@@ -47,10 +52,5 @@ if ingredients_list:
     if st.button("Submit order"):
         session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
-
-import requests
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-st.text(smoothiefroot_response.json())
-sf_df = st.dataframe(smoothiefroot_response.json(), use_container_width=True)
 
 
