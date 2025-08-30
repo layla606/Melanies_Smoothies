@@ -2,6 +2,7 @@
 import streamlit as st
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
+import requests
 
 # --- App title ---
 st.title(":cup_with_straw: Customize Your Smoothie! :cup_with_straw:")
@@ -46,8 +47,6 @@ if ingredients_list:
     if st.button("Submit order"):
         session.sql(my_insert_stmt).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
-
-import requests
 
 smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
 sf_df = st.dataframe(smoothiefroot_response.json(), use_container_width=True)
