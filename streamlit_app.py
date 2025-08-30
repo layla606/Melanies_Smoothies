@@ -51,13 +51,18 @@ if ingredients_list:
         st.success(f"✅ Your Smoothie is ordered! {title}")
 
 smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-data = smoothiefroot_response.json()
 
-# Si la réponse est un dictionnaire, le mettre dans une liste pour créer une ligne de DataFrame
-if isinstance(data, dict):
-    sf_df = pd.DataFrame([data])
+# Vérifie que la requête a réussi
+if smoothiefroot_response.status_code == 200:
+    data = smoothiefroot_response.json()
+
+    # Si c'est un dictionnaire, on le met dans une liste pour créer une DataFrame
+    if isinstance(data, dict):
+        sf_df = pd.DataFrame([data])
+    else:
+        sf_df = pd.DataFrame(data)
+
+    # Affiche la DataFrame dans Streamlit
+    st.dataframe(sf_df, use_container_width=True)
 else:
-    sf_df = pd.DataFrame(data)
-
-# Affichage dans Streamlit
-st.dataframe(sf_df, use_container_width=True)
+    st.error(f"Erreur API: {smoothiefroot_response.status_code}")
