@@ -2,8 +2,6 @@
 import streamlit as st
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
-import requests
-import pandas as pd
 
 
 # --- App title ---
@@ -50,19 +48,8 @@ if ingredients_list:
         session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
 
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+import requests
+smoothiefroot_response = requests.get("https://api/fruit/all")
+st.text(smoothiefroot_response)
 
-# Vérifie que la requête a réussi
-if smoothiefroot_response.status_code == 200:
-    data = smoothiefroot_response.json()
 
-    # Si c'est un dictionnaire, on le met dans une liste pour créer une DataFrame
-    if isinstance(data, dict):
-        sf_df = pd.DataFrame([data])
-    else:
-        sf_df = pd.DataFrame(data)
-
-    # Affiche la DataFrame dans Streamlit
-    st.dataframe(sf_df, use_container_width=True)
-else:
-    st.error(f"Erreur API: {smoothiefroot_response.status_code}")
