@@ -10,7 +10,8 @@ st.write("Choose the fruits you want in your custom Smoothie!")
 
 # --- Input for smoothie name ---
 title = st.text_input("Name on Smoothie")
-st.write("The name on your smoothie will be:", title)
+if title:
+    st.write("The name on your smoothie will be:", title)
 
 # --- Get Snowflake session ---
 sf_config = st.secrets["Snowflake"]
@@ -20,7 +21,7 @@ session = Session.builder.configs(sf_config).create()
 my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"), col("SEARCH_ON"))
 pd_df = my_dataframe.to_pandas()
 
-# Display available fruits
+# Show available fruits
 st.subheader("Available Fruits")
 st.dataframe(pd_df, use_container_width=True)
 
@@ -43,18 +44,24 @@ if ingredients_list:
         # Get the search value from Snowflake
         search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
 
-        # Display nutrition info from Fruityvice API
-        st.subheader(f"{fruit_chosen} Nutrition Information (Fruityvice)")
+        # --- Fruityvice Nutrition Table ---
         fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{fruit_chosen.lower()}")
         if fruityvice_response.status_code == 200:
-            st.json(fruityvice_response.json())
+            fruityvice_json = fruityvice_response.json()
+            nutritions = fruityvice_json.get("nutritions", {})
+            nutrition_df = {
+                "Fruit": [fruit_chosen],
+                **{k.capitalize(): [v] for k, v in nutritions.items()}
+            }
+            st.subheader(f"{fruit_chosen} Nutrition Information (Fruityvice)")
+            st.table(nutrition_df)
         else:
             st.warning(f"No Fruityvice data found for {fruit_chosen}.")
 
-        # Display nutrition info from Smoothiefroot API
-        st.subheader(f"{fruit_chosen} Nutrition Information (Smoothiefroot)")
+        # --- Smoothiefroot Nutrition (optional) ---
         smoothiefroot_response = requests.get(f"https://my.smoothiefroot.com/api/fruit/{search_on}")
         if smoothiefroot_response.status_code == 200:
+            st.subheader(f"{fruit_chosen} Nutrition Information (Smoothiefroot)")
             st.json(smoothiefroot_response.json())
         else:
             st.warning(f"No Smoothiefroot data found for {fruit_chosen}.")
