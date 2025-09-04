@@ -25,13 +25,13 @@ my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT
 pd_df=my_dataframe.to_pandas()
 st.dataframe(pd_df)
 st.stop() 
-fruit_list = my_dataframe.collect()
-fruit_options = [row["FRUIT_NAME"] for row in fruit_list]  # Convert DataFrame to Python list
+#fruit_list = my_dataframe.collect()
+#fruit_options = [row["FRUIT_NAME"] for row in fruit_list]  # Convert DataFrame to Python list
 
 # --- Multiselect for ingredients ---
 ingredients_list = st.multiselect(
     "Choose up to 5 ingredients:",
-    my_dataframe,  # Use Python list, not DataFrame
+    fruit_options,  # Use Python list, not DataFrame
     max_selections=5
 )
 
