@@ -46,8 +46,9 @@ if ingredients_list:
         
         st.subheader(fruit_chosen+ 'Nutrition Information')
         fruityvice_response=requests.get("https://fruityvice.com/api/fruit/"+ fruit_chosen)
-        #smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-        #sf_df = st.dataframe(smoothiefroot_response.json(), use_container_width=True)
+        
+        smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+        sf_df = st.dataframe(smoothiefroot_response.json(), use_container_width=True)
 
 
     # Create SQL insert statement using safe bind parameters
