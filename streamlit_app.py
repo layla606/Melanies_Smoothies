@@ -15,7 +15,7 @@ st.write("The name on your smoothie will be:", title)
 
 # --- Get Snowflake session ---
 sf_config = st.secrets["Snowflake"]
-session = get_active_session()
+session = Session.builder.configs(sf_config).create()
 
 # --- Load fruit options from Snowflake ---
 my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"), col('SEARCH_ON'))
