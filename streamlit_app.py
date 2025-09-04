@@ -53,17 +53,18 @@ if ingredients_list:
 
     ingredients_string = ingredients_string.strip()
 
-    # Create SQL insert statement using safe bind parameters
-    my_insert_stmt = """
-        INSERT INTO smoothies.public.orders(ingredients, name_on_order)
-        VALUES (:ingredients, :title)
-    """
+# Create SQL insert statement
+my_insert_stmt = """
+    INSERT INTO smoothies.public.orders(ingredients, name_on_order)
+    VALUES (:ingredients, :title)
+"""
 
-    # Display SQL preview (optional)
-    st.write("SQL preview:")
-    st.code(f"INSERT INTO smoothies.public.orders(ingredients, name_on_order) VALUES ('{ingredients_string}', '{title}')")
-
-    # Button to submit the order
-    if st.button("Submit order"):
-        session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
+# Button to submit the order
+if st.button("Submit order"):
+    if not ingredients_string or not title:
+        st.error("Please select ingredients and enter a name before submitting!")
+    else:
+        # Correct way to bind parameters in Snowpark
+        session.sql(my_insert_stmt).bind({"ingredients": ingredients_string, "title": title}).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
+
