@@ -65,6 +65,6 @@ if st.button("Submit order"):
         st.error("Please select ingredients and enter a name before submitting!")
     else:
         # Correct way to bind parameters in Snowpark
-        session.sql(my_insert_stmt).bind({"ingredients": ingredients_string, "title": title}).collect()
+        session.sql(my_insert_stmt, params={"ingredients": ingredients_string, "title": title}).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
 
