@@ -58,9 +58,9 @@ if ingredients_list:
 
     # Display SQL preview (optional)
     st.write("SQL preview:")
-    st.code(f"INSERT INTO smoothies.public.orders(ingredients, name_on_order) VALUES ('{ingredients_string}', '{title}')")
+    st.code(f"INSERT INTO SMOOTHIES.PUBLIC.ORDERS(INGREDIENTS, NAME_ON_ORDER) VALUES ('{ingredients_string}', '{title}')")
 
     # Button to submit the order
     if st.button("Submit order"):
-        session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
+        session.sql(my_insert_stmt, {"INGREDIENTS": ingredients_string, "title": title}).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
