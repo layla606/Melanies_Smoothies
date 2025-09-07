@@ -61,7 +61,8 @@ if ingredients_list:
     st.code(f"INSERT INTO SMOOTHIES.PUBLIC.ORDERS(INGREDIENTS, NAME_ON_ORDER) VALUES ('{ingredients_string}', '{title}')")
 
     # Button to submit the order
-  if st.button("Submit order"):
+  # --- Button to submit the order ---
+if st.button("Submit order"):
     session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
     st.success(f"✅ Your Smoothie is ordered! {title}")
 
