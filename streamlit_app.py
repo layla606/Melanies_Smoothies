@@ -66,9 +66,8 @@ if st.button("Submit order"):
     try:
         my_insert_stmt = """
             INSERT INTO SMOOTHIES.PUBLIC.ORDERS (NAME_ON_ORDER, INGREDIENTS)
-            VALUES (:title, :ingredients)
+            VALUES (?, ?)
         """
-        # Passer les valeurs dans l'ordre des placeholders
         session.sql(my_insert_stmt, [title, ingredients_string]).collect()
         st.success(f"✅ Your Smoothie is ordered! {title}")
     except Exception as e:
