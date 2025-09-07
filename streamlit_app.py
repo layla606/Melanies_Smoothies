@@ -63,6 +63,14 @@ if ingredients_list:
     # Button to submit the order
   # --- Button to submit the order ---
 if st.button("Submit order"):
-    session.sql(my_insert_stmt, {"ingredients": ingredients_string, "title": title}).collect()
-    st.success(f"✅ Your Smoothie is ordered! {title}")
+    try:
+        my_insert_stmt = """
+            INSERT INTO SMOOTHIES.PUBLIC.ORDERS (NAME_ON_ORDER, INGREDIENTS)
+            VALUES (:title, :ingredients)
+        """
+        session.sql(my_insert_stmt, {"title": title, "ingredients": ingredients_string}).collect()
+        st.success(f"✅ Your Smoothie is ordered! {title}")
+    except Exception as e:
+        st.error(f"❌ Error: {e}")
+
 
