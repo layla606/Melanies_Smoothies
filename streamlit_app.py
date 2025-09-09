@@ -30,7 +30,8 @@ st.write('The name on your Smoothie will be:', name_on_order)
 
 # --- Récupération des fruits depuis Snowflake ---
 my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"))
-st.dataframe(my_dataframe, use_container_width=True)
+st.dataframe(my_dataframe, width="stretch")
+
 
 # --- Sélection des ingrédients ---
 ingredients_list = st.multiselect(
