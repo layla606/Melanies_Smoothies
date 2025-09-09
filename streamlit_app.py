@@ -52,8 +52,11 @@ if ingredients_list:
     my_insert_stmt = f"""
         insert into smoothies.public.orders(ingredients, name_on_order)
         values ('{ingredients_string}', '{name_on_order}')
-    """
-# Display SQL preview (optional)
+    """ time_to_insert = st.button("Submit Order")
+
+    if time_to_insert:
+        session.sql(my_insert_stmt).collect()
+        st.success("Your Smoothie is ordered!", icon="✅")# Display SQL preview (optional)
     st.write("SQL preview:")
     st.code(f"INSERT INTO smoothies.public.orders(ingredients, name_on_order) VALUES ('{ingredients_string}', '{title}')")
 
