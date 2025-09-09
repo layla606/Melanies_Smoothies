@@ -10,49 +10,42 @@ st.write(
     """
 )
 
-import streamlit as st
+# --- Connexion à Snowflake ---
+# Assure-toi d’avoir configuré ton fichier .streamlit/secrets.toml
+# avec les infos de connexion ([connections.snowflake])
+conn = st.connection("snowflake")
+session = conn.session()
 
+# --- Input pour le nom ---
 name_on_order = st.text_input('Name on Smoothie:')
 st.write('The name on your Smoothie will be:', name_on_order)
 
-cnx= st.connection("snowflake")
-session = cnx.session()
+# --- Récupération des fruits depuis Snowflake ---
 my_dataframe = session.table("smoothies.public.fruit_options").select(col("FRUIT_NAME"))
 st.dataframe(my_dataframe, use_container_width=True)
 
+# --- Sélection des ingrédients ---
 ingredients_list = st.multiselect(
     'Choose up to 5 ingredients:',
     my_dataframe,
     max_selections=5
 )
 
+# --- Si des ingrédients sont choisis, construire et insérer la commande ---
 if ingredients_list:
     ingredients_string = ''
 
     for fruit_chosen in ingredients_list:
         ingredients_string += fruit_chosen + ' '
 
-    #st.write(ingredients_string)
+    # st.write(ingredients_string)  # debug
 
-    my_insert_stmt = """ insert into smoothies.public.orders(ingredients, name_on_order)
-                         values ('""" + ingredients_string + """','""" + name_on_order + """')"""
+    my_insert_stmt = f"""
+        insert into smoothies.public.orders(ingredients, name_on_order)
+        values ('{ingredients_string}', '{name_on_order}')
+    """
 
-
-    # Display SQL preview (optional)
-    st.write("SQL preview:")
-    st.code(f"INSERT INTO SMOOTHIES.PUBLIC.ORDERS(INGREDIENTS, NAME_ON_ORDER) VALUES ('{ingredients_string}', '{title}')")
-
-    # Button to submit the order
-  # --- Button to submit the order ---
-if st.button("Submit order"):
-    try:
-        my_insert_stmt = """
-            INSERT INTO SMOOTHIES.PUBLIC.ORDERS (NAME_ON_ORDER, INGREDIENTS)
-            VALUES (?, ?)
-        """
-        session.sql(my_insert_stmt, [title, ingredients_string]).collect()
-        st.success(f"✅ Your Smoothie is ordered! {title}")
-    except Exception as e:
-        st.error(f"❌ Error: {e}")
-
+    # Exécuter l'insert
+    session.sql(my_insert_stmt).collect()
+    st.success("Your smoothie order has been saved! 🥤")
 
