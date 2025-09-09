@@ -54,6 +54,17 @@ if ingredients_list:
         values ('{ingredients_string}', '{name_on_order}')
     """
 
-    # Exécuter l'insert
-    session.sql(my_insert_stmt).collect()
-    st.success("Your smoothie order has been saved! 🥤")
+  if st.button("Submit Order", type="primary"):
+    if not name_on_order:
+        st.error("Please enter your name before submitting!")
+    elif not ingredients_list:
+        st.error("Please choose at least one ingredient!")
+    else:
+        ingredients_string = " ".join(ingredients_list)
+
+        my_insert_stmt = f"""
+            insert into smoothies.public.orders(ingredients, name_on_order)
+            values ('{ingredients_string}', '{name_on_order}')
+        """
+        session.sql(my_insert_stmt).collect()
+        st.success(f"✅ Your Smoothie is ordered, {name_on_order}!")
