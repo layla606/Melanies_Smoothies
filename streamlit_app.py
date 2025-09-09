@@ -10,10 +10,18 @@ st.write(
     """
 )
 
-# --- Connexion à Snowflake ---
-# Assure-toi d’avoir configuré ton fichier .streamlit/secrets.toml
-# avec les infos de connexion ([connections.snowflake])
-conn = st.connection("snowflake")
+# --- Connexion explicite à Snowflake ---
+conn = st.connection(
+    "",  # nom vide pour ne pas utiliser "snowflake" par défaut
+    type="snowflake",
+   account = "NSROXKC-QFB68358",
+   user = "Nermine",
+   password = "Leila12345678A",
+   role = "SYSADMIN",
+   warehouse = "COMPUTE_WH",
+   database = "SMOOTHIES",
+   schema = "PUBLIC",
+)
 session = conn.session()
 
 # --- Input pour le nom ---
@@ -48,4 +56,3 @@ if ingredients_list:
     # Exécuter l'insert
     session.sql(my_insert_stmt).collect()
     st.success("Your smoothie order has been saved! 🥤")
-
